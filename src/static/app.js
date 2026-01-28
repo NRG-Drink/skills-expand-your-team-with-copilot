@@ -417,10 +417,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Handle difficulty filter
-      if (currentDifficulty === "all") {
-        // When "All Levels" is selected, only show activities without difficulty
-        queryParams.push(`no_difficulty=true`);
-      } else if (currentDifficulty) {
+      // Only add a difficulty filter when a specific level is selected.
+      // Do not send a `no_difficulty` flag for "all" — we want difficulty info returned always.
+      if (currentDifficulty && currentDifficulty !== "all") {
         queryParams.push(`difficulty_level=${encodeURIComponent(currentDifficulty)}`);
       }
 
@@ -560,7 +559,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let difficultyBadge = "";
     if (details.difficulty_level) {
       const difficultyClass = `difficulty-${details.difficulty_level.toLowerCase()}`;
-      difficultyBadge = `<span class="difficulty-badge ${difficultyClass}">${details.difficulty_level}</span>`;
+      // Use the same base styling as the category tag, but keep difficulty color classes
+      difficultyBadge = `<span class="activity-tag difficulty-badge ${difficultyClass}">${details.difficulty_level}</span>`;
     }
 
     // Create difficulty bar if difficulty level is specified
@@ -572,7 +572,8 @@ document.addEventListener("DOMContentLoaded", () => {
     activityCard.innerHTML = `
       ${difficultyBar}
       ${tagHtml}
-      <h4>${name}${difficultyBadge}</h4>
+      ${difficultyBadge}
+      <h4>${name}</h4>
       <p>${details.description}</p>
       <p class="tooltip">
         <strong>Schedule:</strong> ${formattedSchedule}
