@@ -417,7 +417,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Handle difficulty filter
-      if (currentDifficulty) {
+      if (currentDifficulty === "all") {
+        // When "All Levels" is selected, only show activities without difficulty
+        queryParams.push(`no_difficulty=true`);
+      } else if (currentDifficulty) {
         queryParams.push(`difficulty_level=${encodeURIComponent(currentDifficulty)}`);
       }
 

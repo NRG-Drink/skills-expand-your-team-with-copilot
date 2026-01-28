@@ -19,7 +19,8 @@ def get_activities(
     day: Optional[str] = None,
     start_time: Optional[str] = None,
     end_time: Optional[str] = None,
-    difficulty_level: Optional[str] = None
+    difficulty_level: Optional[str] = None,
+    no_difficulty: Optional[bool] = None
 ) -> Dict[str, Any]:
     """
     Get all activities with their details, with optional filtering by day and time
@@ -28,6 +29,7 @@ def get_activities(
     - start_time: Filter activities starting at or after this time (24-hour format, e.g., '14:30')
     - end_time: Filter activities ending at or before this time (24-hour format, e.g., '17:00')
     - difficulty_level: Filter activities by difficulty level (e.g., 'Beginner', 'Intermediate', 'Advanced')
+    - no_difficulty: Filter activities without a difficulty level (when true)
     """
     # Build the query based on provided filters
     query = {}
@@ -43,6 +45,9 @@ def get_activities(
     
     if difficulty_level:
         query["difficulty_level"] = difficulty_level
+    elif no_difficulty:
+        # Filter for activities that don't have a difficulty_level field
+        query["difficulty_level"] = {"$exists": False}
     
     # Query the database
     activities = {}
