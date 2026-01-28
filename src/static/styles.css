@@ -423,6 +423,12 @@ button {
   transform: scale(1.1);
 }
 
+.share-button:focus,
+.share-button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .skeleton-line {
   height: 10px;
   margin-bottom: 8px;
