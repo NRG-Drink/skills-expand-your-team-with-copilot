@@ -242,7 +242,7 @@ section h3 {
   left: 0;
   width: 100%;
   height: 4px;
-  background: linear-gradient(90deg, var(--difficulty-color) 0%, var(--difficulty-color) 100%);
+  background: var(--difficulty-color);
 }
 
 .activity-card[data-difficulty="Beginner"] {
