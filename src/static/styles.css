@@ -235,6 +235,31 @@ section h3 {
   border: 1px solid #ef9a9a;
 }
 
+/* Difficulty Bar - Visual indicator on card */
+.difficulty-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--difficulty-color) 0%, var(--difficulty-color) 100%);
+}
+
+.activity-card[data-difficulty="Beginner"] {
+  --difficulty-color: #2e7d32;
+  border-left: 3px solid #2e7d32;
+}
+
+.activity-card[data-difficulty="Intermediate"] {
+  --difficulty-color: #e65100;
+  border-left: 3px solid #e65100;
+}
+
+.activity-card[data-difficulty="Advanced"] {
+  --difficulty-color: #c62828;
+  border-left: 3px solid #c62828;
+}
+
 /* Capacity Indicator */
 .capacity-container {
   margin: 8px 0;

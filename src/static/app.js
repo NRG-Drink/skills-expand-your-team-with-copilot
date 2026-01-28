@@ -508,6 +508,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
     activityCard.className = "activity-card";
+    
+    // Add difficulty data attribute for styling
+    if (details.difficulty_level) {
+      activityCard.setAttribute("data-difficulty", details.difficulty_level);
+    }
 
     // Calculate spots and capacity
     const totalSpots = details.max_participants;
@@ -558,7 +563,14 @@ document.addEventListener("DOMContentLoaded", () => {
       difficultyBadge = `<span class="difficulty-badge ${difficultyClass}">${details.difficulty_level}</span>`;
     }
 
+    // Create difficulty bar if difficulty level is specified
+    let difficultyBar = "";
+    if (details.difficulty_level) {
+      difficultyBar = `<div class="difficulty-bar"></div>`;
+    }
+
     activityCard.innerHTML = `
+      ${difficultyBar}
       ${tagHtml}
       <h4>${name}${difficultyBadge}</h4>
       <p>${details.description}</p>
