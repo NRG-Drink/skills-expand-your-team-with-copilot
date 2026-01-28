@@ -18,17 +18,31 @@ def hash_password(password):
     return ph.hash(password)
 
 def init_database():
-    """Initialize database if empty"""
+    """Initialize database if empty or ensure required fields exist"""
 
-    # Initialize activities if empty
-    if activities_collection.count_documents({}) == 0:
-        for name, details in initial_activities.items():
+    # Upsert activities: insert if missing, add missing fields for existing documents
+    for name, details in initial_activities.items():
+        existing = activities_collection.find_one({"_id": name})
+        if existing:
+            # Build set of fields that are missing or should be added (only add, don't overwrite)
+            set_fields = {}
+            for key, val in details.items():
+                if key not in existing:
+                    set_fields[key] = val
+            if set_fields:
+                activities_collection.update_one({"_id": name}, {"$set": set_fields})
+        else:
             activities_collection.insert_one({"_id": name, **details})
             
-    # Initialize teacher accounts if empty
-    if teachers_collection.count_documents({}) == 0:
-        for teacher in initial_teachers:
-            teachers_collection.insert_one({"_id": teacher["username"], **teacher})
+    # Upsert teacher accounts (create if missing, don't overwrite existing accounts)
+    for teacher in initial_teachers:
+        teachers_collection.update_one(
+            {"_id": teacher["username"]},
+            {"$setOnInsert": {"display_name": teacher["display_name"],
+                              "password": teacher["password"],
+                              "role": teacher["role"]}},
+            upsert=True
+        )
 
 # Initial database if empty
 initial_activities = {
@@ -65,7 +79,8 @@ initial_activities = {
             "end_time": "07:45"
         },
         "max_participants": 30,
-        "participants": ["john@mergington.edu", "olivia@mergington.edu"]
+        "participants": ["john@mergington.edu", "olivia@mergington.edu"],
+        "difficulty_level": "Beginner"
     },
     "Soccer Team": {
         "description": "Join the school soccer team and compete in matches",
@@ -76,7 +91,8 @@ initial_activities = {
             "end_time": "17:30"
         },
         "max_participants": 22,
-        "participants": ["liam@mergington.edu", "noah@mergington.edu"]
+        "participants": ["liam@mergington.edu", "noah@mergington.edu"],
+        "difficulty_level": "Intermediate"
     },
     "Basketball Team": {
         "description": "Practice and compete in basketball tournaments",
@@ -87,7 +103,8 @@ initial_activities = {
             "end_time": "17:00"
         },
         "max_participants": 15,
-        "participants": ["ava@mergington.edu", "mia@mergington.edu"]
+        "participants": ["ava@mergington.edu", "mia@mergington.edu"],
+        "difficulty_level": "Intermediate"
     },
     "Art Club": {
         "description": "Explore various art techniques and create masterpieces",
@@ -98,7 +115,8 @@ initial_activities = {
             "end_time": "17:00"
         },
         "max_participants": 15,
-        "participants": ["amelia@mergington.edu", "harper@mergington.edu"]
+        "participants": ["amelia@mergington.edu", "harper@mergington.edu"],
+        "difficulty_level": "Beginner"
     },
     "Drama Club": {
         "description": "Act, direct, and produce plays and performances",
@@ -109,7 +127,8 @@ initial_activities = {
             "end_time": "17:30"
         },
         "max_participants": 20,
-        "participants": ["ella@mergington.edu", "scarlett@mergington.edu"]
+        "participants": ["ella@mergington.edu", "scarlett@mergington.edu"],
+        "difficulty_level": "Intermediate"
     },
     "Math Club": {
         "description": "Solve challenging problems and prepare for math competitions",
@@ -132,7 +151,8 @@ initial_activities = {
             "end_time": "17:30"
         },
         "max_participants": 12,
-        "participants": ["charlotte@mergington.edu", "amelia@mergington.edu"]
+        "participants": ["charlotte@mergington.edu", "amelia@mergington.edu"],
+        "difficulty_level": "Intermediate"
     },
     "Weekend Robotics Workshop": {
         "description": "Build and program robots in our state-of-the-art workshop",
